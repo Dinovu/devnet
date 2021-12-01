@@ -1,0 +1,25 @@
+--- 
+- name: CONFIGURE DYNAMIC ROUTING
+  hosts: CSR1kv 
+  gather_facts: false 
+  connection: local 
+
+  tasks: 
+   - name: CONFIG OSPF
+     ios_config:
+      provider: "{{hosts}}"
+      lines:
+      - router ospf 1
+      - network 192.168.10.0 0.0.0.255 area 0
+      #- ip static 172.16.0.0/16 192.168.10.1
+ 
+  # - name: SHOW IPv6 INTERFACE BRIEF  
+  #   ios_command: 
+  #     commands: 
+  #       - show ipv6 interface brief 
+  #   register: output 
+ 
+   - name: SAVE OUTPUT ./test/ 
+     copy:  
+       content: "{{ output.stdout[0] }}" 
+       dest: "test/ospf_output_{{ inventory_hostname }}.txt" 
